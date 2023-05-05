@@ -7,60 +7,61 @@ using UnityEngine.EventSystems;
 
 public class MoveController : MonoBehaviour
 {
-    [SerializeField] private GameObject target;
     [SerializeField] private float speed = default;
-    [SerializeField] private Joystick _joystick;
-    private Vector2 lastMousePos;
+    [SerializeField] private float rotationSpeed = default;
+    [SerializeField] private JoystickMove _joystickMove;
+    [SerializeField] private JoystickShoot _joystickShoot;
     private Rigidbody rb;
+    private Player pl;
 
 
     private void Awake()
     {
-        rb = target.GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
+        pl = GetComponent<Player>();
     }
-
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        if (_joystick.isTouched)
+        if (_joystickMove.isTouched ||_joystickShoot.isTouched)
         {
             MovePlayer();
         }
 
     }
-
-
+    
     private void MovePlayer()
     {
-        if (_joystick.Horizontal() != 0 || _joystick.Vertical() != 0)
-        {
+        
+            Vector3 directionMove = new Vector3(_joystickMove.Vertical(), 0, _joystickMove.Horizontal());
+            Vector3 directionShoot = new Vector3(_joystickShoot.VerticalShoot(), 0, _joystickShoot.HorizontalShoot());
+            if (!_joystickShoot.isTouched)
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(directionMove),
+                    Time.deltaTime * rotationSpeed);
+                Debug.Log(directionMove);
+                rb.velocity = directionMove * speed;
+            }
+            else
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(directionShoot),
+                    Time.deltaTime * rotationSpeed);
+                GameManager.instanse.isCanShoot = true;
+            }
 
-            Vector3 direction = new Vector3(_joystick.Horizontal(), 0, -_joystick.Vertical());
-
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            target.transform.LookAt(direction + target.transform.position);
-            //rb.AddForce(direction*speed);
-            rb.velocity = target.transform.forward * speed;
-            // target.Translate(direction*speed * Time.deltaTime,Space.World);
-        }
-        else
-        {
-            _joystick.isTouched = false;
-            StartCoroutine(StopMoving());
-        }
+        
+            //StartCoroutine(StopMoving());
+        
     }
 
     private IEnumerator StopMoving()
     {
-        while (rb.velocity != Vector3.zero)
+        Debug.Log("stop");
+        rb.angularVelocity = new Vector3(0, 0, 0);
+        rb.velocity = Vector3.zero;
+        /*while (rb.velocity != Vector3.zero)
         {
             rb.velocity -= rb.velocity / 100;
-        }
+        }*/
 
         yield return null;
     }
