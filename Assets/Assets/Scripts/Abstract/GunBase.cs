@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Quaternion = System.Numerics.Quaternion;
 
 public abstract class GunBase : MonoBehaviour
 {
@@ -50,8 +51,8 @@ public abstract class GunBase : MonoBehaviour
     {
         Bullet bullet = bulletPull.Dequeue();
         bullet.transform.position = bulletStartPosition.position;
-        bullet.transform.LookAt(point);
         bullet.gameObject.SetActive(true);
+        bullet.transform.rotation = transform.parent.rotation;
         bullet.Shot(point);
     }
 }
