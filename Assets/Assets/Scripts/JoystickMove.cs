@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class JoystickMove : Joystiks
 {
     
-    private void Start()
+    private void Awake()
     {
         bgImg = GetComponent<Image>();
         joystick = transform.GetChild(0).GetComponent<Image>();

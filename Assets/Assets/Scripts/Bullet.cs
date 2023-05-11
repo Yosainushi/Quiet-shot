@@ -6,6 +6,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     internal Queue<Bullet> parentPool = default;
+    internal GunBase gunParent = default;
     internal float speed = default;
     internal float lifeTime;
     private float currentLifeTime;
@@ -28,12 +29,22 @@ public class Bullet : MonoBehaviour
         
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (  other.tag=="Enemy")
+        {
+            DisableBullet();
+        }
+
+      
+    }
+
     public void Shot(Vector3 direction)
     {
         currentLifeTime = lifeTime;
         currentCor = StartCoroutine(MoveToTarget(direction));
     }
-
+    
     private IEnumerator MoveToTarget(Vector3 direction)
     {
         while (currentLifeTime>0)

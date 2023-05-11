@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +10,9 @@ public abstract class Joystiks :  MonoBehaviour,IDragHandler, IPointerDownHandle
      public Image bgImg { get; set; }
      public Image joystick { get; set; }
      public Vector2 inputVector { get; set; }
-    
      internal bool isTouched { get; set; }
+
+     
 
      public void OnDrag(PointerEventData eventData)
      {
@@ -38,5 +40,6 @@ public abstract class Joystiks :  MonoBehaviour,IDragHandler, IPointerDownHandle
           isTouched = false;
           inputVector = Vector2.zero;
           joystick.rectTransform.anchoredPosition = Vector2.zero;
+          MoveController.instanse.StopMove();
      }
 }

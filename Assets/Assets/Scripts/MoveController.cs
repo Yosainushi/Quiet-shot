@@ -8,15 +8,18 @@ using UnityEngine.EventSystems;
 public class MoveController : MonoBehaviour
 {
     [SerializeField] private float speed = default;
-    [SerializeField] private float rotationSpeed = default;
+    [SerializeField] private float rotationMoveSpeed = default;
+    [SerializeField] private float rotationShootSpeed = default;
     [SerializeField] private JoystickMove _joystickMove;
-    [SerializeField] private JoystickShoot _joystickShoot;
+    [SerializeField] internal JoystickShoot _joystickShoot;
     private Rigidbody rb;
     private Player pl;
 
+    public static MoveController instanse;
 
     private void Awake()
     {
+        instanse ??= this;
         rb = GetComponent<Rigidbody>();
         pl = GetComponent<Player>();
     }
@@ -37,34 +40,29 @@ public class MoveController : MonoBehaviour
             if (!_joystickShoot.isTouched)
             {
                 transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(directionMove),
-                    Time.deltaTime * rotationSpeed);
-                Debug.Log(directionMove);
-                rb.velocity = directionMove * speed;
+                    Time.deltaTime * rotationMoveSpeed);
+               
             }
             else
             {
                 transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(directionShoot),
-                    Time.deltaTime * rotationSpeed);
+                    Time.deltaTime * rotationShootSpeed);
+                DrawAimLine(directionShoot);
                 GameManager.instanse.isCanShoot = true;
             }
-
-        
-            //StartCoroutine(StopMoving());
-        
+            rb.velocity = directionMove * speed;
     }
 
-    private IEnumerator StopMoving()
+    private void DrawAimLine(Vector3 direction)
     {
-        Debug.Log("stop");
+        
+    }
+    public void StopMove()
+    {
         rb.angularVelocity = new Vector3(0, 0, 0);
         rb.velocity = Vector3.zero;
-        /*while (rb.velocity != Vector3.zero)
-        {
-            rb.velocity -= rb.velocity / 100;
-        }*/
-
-        yield return null;
     }
+    
 }
 
     

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,20 +7,16 @@ using UnityEngine.EventSystems;
 
 public class JoystickShoot : Joystiks
 {
-    void Start()
+    void Awake()
     {
         bgImg = GetComponent<Image>();
         joystick = transform.GetChild(0).GetComponent<Image>();
     }
 
-    void Update()
-    {
-        
-    }
-
     public override void OnPointerUp(PointerEventData eventData)
     {
         base.OnPointerUp(eventData);
+        GameManager.instanse.player.gun.StopShoot();
         GameManager.instanse.isCanShoot = false;
     }
 
